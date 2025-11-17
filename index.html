@@ -1,0 +1,360 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Stylish Name Generator By Muzammil</title>
+    <style>
+        :root {
+            font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial
+        }
+
+        body {
+            background: #0f172a;
+            color: #e6eef8;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px
+        }
+
+        .card {
+            background: #0b1220;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 30px rgba(2, 6, 23, .6);
+            width: 100%;
+            max-width: 980px
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 10px
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px
+        }
+
+        input[type=text] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #21324a;
+            background: #071026;
+            color: inherit
+        }
+
+        button {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 0;
+            background: #0ea5a4;
+            color: #042022;
+            cursor: pointer
+        }
+
+        .list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 8px
+        }
+
+        .item {
+            background: #071428;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .item button {
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #0ea5a4;
+            color: #012;
+            border: 0
+        }
+
+        .meta {
+            font-size: 13px;
+            color: #9fb0c9;
+            margin-bottom: 8px
+        }
+
+        .small {
+            font-size: 13px;
+            color: #9fb0c9
+        }
+
+        footer {
+            margin-top: 12px;
+            color: #94a8bf;
+            font-size: 13px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Stylish Name Generator-By Muhammad Muzammil </h1>
+        <div class="meta">Type a name and click <strong>Generate</strong>. The page will produce 150+ distinct styled
+            variants using Unicode and clever transforms. Click a result to copy.</div>
+
+        <div class="controls">
+            <input id="nameInput" type="text" placeholder="Type a name (e.g. Muzammil)" value="Muzammil" />
+            <button id="genBtn">Generate</button>
+            <button id="copyAll">Copy All</button>
+            <button id="downloadBtn">Download .txt</button>
+        </div>
+
+        <div id="count" class="small">Results: 0</div>
+        <div id="list" class="list"></div>
+<footer style="text-align:center; padding:15px 0; background:black; margin-top:20px;">
+    © 2025 Stylish Name Generator By Muzammil. All rights reserved.
+</footer>
+    </div>
+
+    <script>
+
+        const maps = {
+            bold: { start: 0x1D400, offsetUpper: 0, offsetLower: 26 },
+            italic: { start: 0x1D434 },
+        };
+
+        const smallCapsMap = {
+            a: 'ᴀ', b: 'ʙ', c: 'ᴄ', d: 'ᴅ', e: 'ᴇ', f: 'ꜰ', g: 'ɢ', h: 'ʜ', i: 'ɪ', j: 'ᴊ', k: 'ᴋ', l: 'ʟ', m: 'ᴍ', n: 'ɴ', o: 'ᴏ', p: 'ᴘ', q: 'ǫ', r: 'ʀ', s: 's', t: 'ᴛ', u: 'ᴜ', v: 'ᴠ', w: 'ᴡ', x: 'x', y: 'ʏ', z: 'ᴢ'
+        };
+
+        const bubbleMap = {
+            a: 'Ⓐ', b: 'Ⓑ', c: 'Ⓒ', d: 'Ⓓ', e: 'Ⓔ', f: 'Ⓕ', g: 'Ⓖ', h: 'Ⓗ', i: 'Ⓘ', j: 'Ⓙ', k: 'Ⓚ', l: 'Ⓛ', m: 'Ⓜ', n: 'Ⓝ', o: 'Ⓞ', p: 'Ⓟ', q: 'Ⓠ', r: 'Ⓡ', s: 'Ⓢ', t: 'Ⓣ', u: 'Ⓤ', v: 'Ⓥ', w: 'Ⓦ', x: 'Ⓧ', y: 'Ⓨ', z: 'Ⓩ'
+        };
+
+        function toFullwidth(s) {
+            return s.split('').map(ch => {
+                const code = ch.charCodeAt(0);
+                if (code >= 33 && code <= 126) return String.fromCharCode(0xFF00 + code - 0x20);
+                return ch;
+            }).join('');
+        }
+
+        function toMathBold(s) {
+            const A = 0x1D400; const a = 0x1D41A; let out = '';
+            for (const ch of s) {
+                if (ch >= 'A' && ch <= 'Z') out += String.fromCodePoint(A + (ch.charCodeAt(0) - 65));
+                else if (ch >= 'a' && ch <= 'z') out += String.fromCodePoint(a + (ch.charCodeAt(0) - 97));
+                else out += ch;
+            }
+            return out;
+        }
+
+        function toMathItalic(s) {
+            const A = 0x1D434; const a = 0x1D44E; let out = '';
+            for (const ch of s) {
+                if (ch >= 'A' && ch <= 'Z') out += String.fromCodePoint(A + (ch.charCodeAt(0) - 65));
+                else if (ch >= 'a' && ch <= 'z') out += String.fromCodePoint(a + (ch.charCodeAt(0) - 97));
+                else out += ch;
+            }
+            return out;
+        }
+
+        function toScript(s) {
+            const A = 0x1D49C; const a = 0x1D4B6; let out = '';
+            for (const ch of s) {
+                if (ch >= 'A' && ch <= 'Z') out += String.fromCodePoint(A + (ch.charCodeAt(0) - 65));
+                else if (ch >= 'a' && ch <= 'z') out += String.fromCodePoint(a + (ch.charCodeAt(0) - 97));
+                else out += ch;
+            }
+            return out;
+        }
+
+        function toFraktur(s) {
+            const A = 0x1D504; const a = 0x1D51E; let out = '';
+            for (const ch of s) {
+                if (ch >= 'A' && ch <= 'Z') out += String.fromCodePoint(A + (ch.charCodeAt(0) - 65));
+                else if (ch >= 'a' && ch <= 'z') out += String.fromCodePoint(a + (ch.charCodeAt(0) - 97));
+                else out += ch;
+            }
+            return out;
+        }
+
+        function toMono(s) {
+            const A = 0x1D670; const a = 0x1D68A; let out = '';
+            for (const ch of s) {
+                if (ch >= 'A' && ch <= 'Z') out += String.fromCodePoint(A + (ch.charCodeAt(0) - 65));
+                else if (ch >= 'a' && ch <= 'z') out += String.fromCodePoint(a + (ch.charCodeAt(0) - 97));
+                else out += ch;
+            }
+            return out;
+        }
+
+        function toSmallCaps(s) {
+            return s.split('').map(ch => {
+                const lower = ch.toLowerCase();
+                return smallCapsMap[lower] || ch;
+            }).join('');
+        }
+
+        function toBubble(s) {
+            return s.split('').map(ch => {
+                const lower = ch.toLowerCase();
+                return bubbleMap[lower] || ch;
+            }).join('');
+        }
+
+        const zalgoUp = [0x030d, 0x030e, 0x0304, 0x0305, 0x033f, 0x0311, 0x0306, 0x0310, 0x0352, 0x0357];
+        const zalgoDown = [0x0316, 0x0317, 0x0318, 0x0319, 0x031c, 0x0320, 0x0324, 0x0325, 0x0326, 0x0329];
+        function zalgo(s, intensity = 1) {
+            return s.split('').map(ch => {
+                let out = ch;
+                for (let i = 0; i < intensity; i++) {
+                    out += String.fromCodePoint(zalgoUp[Math.floor(Math.random() * zalgoUp.length)]);
+                    out += String.fromCodePoint(zalgoDown[Math.floor(Math.random() * zalgoDown.length)]);
+                }
+                return out;
+            }).join('');
+        }
+
+        function toLeet(s) {
+            const map = { 'a': '4', 'A': '4', 'e': '3', 'E': '3', 'i': '1', 'I': '1', 'o': '0', 'O': '0', 's': '5', 'S': '5', 't': '7' };
+            return s.split('').map(ch => map[ch] || ch).join('');
+        }
+
+        function altCase(s) {
+            return s.split('').map((ch, i) => i % 2 ? ch.toLowerCase() : ch.toUpperCase()).join('');
+        }
+
+        function spaced(s, sep = ' ') {
+            return s.split('').join(sep);
+        }
+
+        const surrounds = [['«', '»'], ['‹', '›'], ['(', ' )'], ['[', ']'], ['{', '}'], ['<', '>'], ['★', '★'], ['♪', '♪']];
+
+        function generateAll(base) {
+            const variants = new Set();
+            base = base.trim();
+            if (!base) return [];
+
+            const basics = [base, base.toUpperCase(), base.toLowerCase(), altCase(base), toLeet(base), toFullwidth(base)];
+            basics.forEach(v => variants.add(v));
+
+            [toMathBold, toMathItalic, toScript, toFraktur, toMono, toBubble, toSmallCaps].forEach(fn => {
+                try { variants.add(fn(base)); } catch (e) { }
+            });
+
+            variants.add(spaced(base, ' '));
+            variants.add(spaced(base, '\u200A'));
+            variants.add(spaced(base, '\u2009'));
+            variants.add(zalgo(base, 1));
+            variants.add(zalgo(base, 2));
+            variants.add(zalgo(base, 3));
+
+            for (const v of Array.from(variants)) {
+                surrounds.forEach(pair => {
+                    variants.add(pair[0] + v + pair[1]);
+                    variants.add(pair[0] + v.toUpperCase() + pair[1]);
+                });
+            }
+
+            const emojis = ['✧', '★', '✦', '✪', '✿', '❂', '♡', '♥', '☯', '☀', '☾', '♪'];
+            const symbols = ['•', '~', '·', '—', '_', '-', '=', '»', '«'];
+            const varArray = Array.from(variants);
+            varArray.forEach(v => {
+                emojis.forEach(e => variants.add(e + v));
+                emojis.forEach(e => variants.add(v + e));
+                symbols.forEach(s => variants.add(s + v + s));
+            });
+
+            const combos = [];
+            combos.push(toMathBold(base));
+            combos.push(toMathItalic(base));
+            combos.push(toScript(base));
+            combos.push(toFraktur(base));
+            combos.push(toMono(base));
+            combos.push(toBubble(base));
+            combos.push(toSmallCaps(base));
+            combos.push(toFullwidth(base));
+            combos.push(toLeet(base));
+            combos.push(altCase(base));
+            combos.push(spaced(base, ' '));
+
+            combos.forEach(c => {
+                variants.add(c);
+                variants.add(zalgo(c, 1));
+                variants.add('~' + c + '~');
+                emojis.slice(0, 4).forEach(e => variants.add(e + c + e));
+                surrounds.forEach(pair => variants.add(pair[0] + c + pair[1]));
+            });
+
+            const baseWords = base.split(' ');
+            for (let i = 0; i < 1000 && variants.size < 220; i++) {
+                const choice = baseWords[Math.floor(Math.random() * baseWords.length)] || base;
+                let v = choice;
+                if (Math.random() < 0.5) v = toMathBold(v);
+                if (Math.random() < 0.4) v = toLeet(v);
+                if (Math.random() < 0.35) v = altCase(v);
+                if (Math.random() < 0.3) v = toBubble(v);
+                if (Math.random() < 0.25) v = toSmallCaps(v);
+                if (Math.random() < 0.3) v = spaced(v, Math.random() < 0.5 ? ' ' : ' ');
+                if (Math.random() < 0.35) v = v + (Math.random() < 0.5 ? ' •' : ' ✦');
+                if (Math.random() < 0.25) v = zalgo(v, Math.random() < 0.5 ? 1 : 2);
+                variants.add(v);
+            }
+
+            const out = Array.from(variants).filter(s => s && s.length > 0).slice(0, 250);
+            return out;
+        }
+
+        const genBtn = document.getElementById('genBtn');
+        const nameInput = document.getElementById('nameInput');
+        const listEl = document.getElementById('list');
+        const countEl = document.getElementById('count');
+        const copyAllBtn = document.getElementById('copyAll');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        function renderList(arr) {
+            listEl.innerHTML = '';
+            arr.forEach(s => {
+                const it = document.createElement('div'); it.className = 'item';
+                const span = document.createElement('div'); span.textContent = s;
+                const btn = document.createElement('button'); btn.textContent = 'Copy';
+                btn.onclick = () => { navigator.clipboard.writeText(s).then(() => { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy', 900); }); };
+                it.appendChild(span); it.appendChild(btn); listEl.appendChild(it);
+            });
+            countEl.textContent = 'Results: ' + arr.length;
+        }
+
+        genBtn.addEventListener('click', () => {
+            const name = nameInput.value || '';
+            const arr = generateAll(name);
+            if (arr.length < 150) {
+                let idx = 0; while (arr.length < 150) { arr.push(arr[idx % arr.length] + (idx % 9 === 0 ? ' ✧' : ' •')); idx++; if (idx > 1000) break; }
+            }
+            renderList(arr.slice(0, 200));
+        });
+
+        copyAllBtn.addEventListener('click', () => {
+            const texts = Array.from(listEl.querySelectorAll('.item div')).map(d => d.textContent).join('\n');
+            navigator.clipboard.writeText(texts).then(() => { copyAllBtn.textContent = 'Copied'; setTimeout(() => copyAllBtn.textContent = 'Copy All', 900); });
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const texts = Array.from(listEl.querySelectorAll('.item div')).map(d => d.textContent).join('\n');
+            const blob = new Blob([texts], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = (nameInput.value || 'names') + '.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => genBtn.click());
+
+        function toFullwidth(s) { return toFullwidthReal(s); }
+        function toFullwidthReal(s) { return s.split('').map(ch => { const code = ch.charCodeAt(0); if (code >= 33 && code <= 126) return String.fromCharCode(0xFF00 + code - 0x20); return ch; }).join(''); }
+
+    </script>
+</body>
+
+</html>
