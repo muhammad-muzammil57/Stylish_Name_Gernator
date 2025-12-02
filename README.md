@@ -22,8 +22,8 @@ all inside a clean, elegant UI.
 -   Zalgo (glitch)
 -   Full-width
 -   Emoji-decorated styles
--   Symbol surrounds\
--   Spaced variations\
+-   Symbol surrounds
+-   Spaced variations
 -   Hybrid & random combinations
 
 ### ✅ **Copy Single or All Names**
