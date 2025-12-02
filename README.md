@@ -16,7 +16,7 @@ all inside a clean, elegant UI.
 
 -   Bold Unicode
 -   Italic Unicode
--   Script / Fraktur / Bubble\
+-   Script / Fraktur / Bubble
 -   Small Caps\
 -   Leet text\
 -   Zalgo (glitch)\
