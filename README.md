@@ -21,7 +21,7 @@ all inside a clean, elegant UI.
 -   Leet text
 -   Zalgo (glitch)\
 -   Full-width\
--   Emoji-decorated styles\
+-   Emoji-decorated styles
 -   Symbol surrounds\
 -   Spaced variations\
 -   Hybrid & random combinations
