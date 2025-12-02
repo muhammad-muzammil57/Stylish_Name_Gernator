@@ -18,7 +18,7 @@ all inside a clean, elegant UI.
 -   Italic Unicode
 -   Script / Fraktur / Bubble
 -   Small Caps
--   Leet text\
+-   Leet text
 -   Zalgo (glitch)\
 -   Full-width\
 -   Emoji-decorated styles\
