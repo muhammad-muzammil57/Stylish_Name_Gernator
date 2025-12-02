@@ -19,8 +19,8 @@ all inside a clean, elegant UI.
 -   Script / Fraktur / Bubble
 -   Small Caps
 -   Leet text
--   Zalgo (glitch)\
--   Full-width\
+-   Zalgo (glitch)
+-   Full-width
 -   Emoji-decorated styles
 -   Symbol surrounds\
 -   Spaced variations\
