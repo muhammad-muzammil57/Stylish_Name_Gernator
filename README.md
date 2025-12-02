@@ -15,7 +15,7 @@ all inside a clean, elegant UI.
 ### ✅ **Generate 150+ Stylish Name Variants**
 
 -   Bold Unicode
--   Italic Unicode\
+-   Italic Unicode
 -   Script / Fraktur / Bubble\
 -   Small Caps\
 -   Leet text\
